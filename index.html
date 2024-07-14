@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <script
+      src="https://kit.fontawesome.com/3bfd3ce9e5.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>Tic-Tac-Toe</title>
+  </head>
+  <body>
+    <main>
+      <div class="grid" data-id="grid">
+        <div class="turn" data-id="turn">
+          <i class="fa-solid fa-x turquosie"></i>
+          <p class="turquosie" data-id="turn-text">Player 1, you're up!</p>
+        </div>
+
+        <!-- menu  -->
+        <div class="menu" data-id="menu">
+          <div class="menu__btn" data-id="menu-btn">
+            <button>Action</button>
+            <i class="fa-solid fa-caret-down"></i>
+          </div>
+
+          <div class="items hidden" data-id="menu-items">
+            <button data-id="reset-btn">Reset</button>
+            <button data-id="new-round-btn">New Round</button>
+          </div>
+        </div>
+
+        <!-- Game Board -->
+        <div id="1" class="square shadow" data-id="square"></div>
+        <div id="2" class="square shadow" data-id="square"></div>
+        <div id="3" class="square shadow" data-id="square"></div>
+        <div id="4" class="square shadow" data-id="square"></div>
+        <div id="5" class="square shadow" data-id="square"></div>
+        <div id="6" class="square shadow" data-id="square"></div>
+        <div id="7" class="square shadow" data-id="square"></div>
+        <div id="8" class="square shadow" data-id="square"></div>
+        <div id="9" class="square shadow" data-id="square"></div>
+        <div class="score shadow" style="background-color: var(--turquosie)">
+          <p>Player 1</p>
+          <span data-id="p1-wins">0 Wins</span>
+        </div>
+        <div class="score shadow" style="background-color: var(--light-gray)">
+          <p>Ties</p>
+          <span data-id="tie">0</span>
+        </div>
+        <div class="score shadow" style="background-color: var(--yellow)">
+          <p>Player 2</p>
+          <span data-id="p2-wins">0 wins</span>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal hidden" data-id="modal">
+      <div class="modal-content">
+        <p data-id="modal-text">Player 1 wins!</p>
+        <button data-id="modal-btn">Play Again</button>
+      </div>
+    </div>
+    <!-- scripts -->
+    <script src="./Js/app.js" type="module"></script>
+  </body>
+</html>
