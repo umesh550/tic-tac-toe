@@ -1,5 +1,9 @@
+import Store from "./store";
+import { Game, Move, Player, Stats } from "./types";
+
 export default class View {
-  $ = {};
+  $: Record<string, Element> = {};
+  $$: Record<string, NodeListOf<Element>> = {};
   constructor() {
     this.$.grid = this.#qs("[data-id='grid']");
 
@@ -21,7 +25,7 @@ export default class View {
     this.$.modal_button = this.#qs("[data-id='modal-btn']");
 
     // Squares
-    this.$.squares = this.#qsa("[data-id='square']");
+    this.$$.squares = this.#qsa("[data-id='square']");
 
     //scoreboard
     this.$.p1_wins = this.#qs("[data-id='p1-wins']");
@@ -34,7 +38,7 @@ export default class View {
     });
   }
 
-  render(game, stats) {
+  render(game: Store["game"], stats: Stats) {
     const { playerWithStats, ties } = stats;
     const {
       moves,
@@ -59,30 +63,30 @@ export default class View {
   }
 
   //Event Listners
-  bindGameResetEvent(handler) {
+  bindGameResetEvent(handler: EventListener) {
     this.$.reset_btn.addEventListener("click", handler);
     this.$.modal_button.addEventListener("click", handler);
   }
 
-  bindNewRoundEvent(handler) {
+  bindNewRoundEvent(handler: EventListener) {
     this.$.new_round_btn.addEventListener("click", handler);
   }
 
-  bindPlayerMoveEvent(handler) {
+  bindPlayerMoveEvent(handler: (el: Element) => void) {
     this.#delegate(this.$.grid, '[data-id="square"]', "click", handler);
   }
 
   // Helper private Methods
 
-  #updateScoreboard(p1, p2, tie) {
-    this.$.p1_wins.innerText = `${p1} wins`;
-    this.$.p2_wins.innerText = `${p2} wins`;
-    this.$.tie.innerText = `${tie} Ties`;
+  #updateScoreboard(p1: number, p2: number, tie: number) {
+    this.$.p1_wins.textContent = `${p1} wins`;
+    this.$.p2_wins.textContent = `${p2} wins`;
+    this.$.tie.textContent = `${tie} Ties`;
   }
 
-  #openModal(message) {
+  #openModal(message: string) {
     this.$.modal.classList.remove("hidden");
-    this.$.modal_text.innerText = message;
+    this.$.modal_text.textContent = message;
   }
 
   #closeAll() {
@@ -91,11 +95,11 @@ export default class View {
   }
 
   #clearSquares() {
-    this.$.squares.forEach((square) => square.replaceChildren());
+    this.$$.squares.forEach((square) => square.replaceChildren());
   }
 
-  #initializeViews(moves) {
-    this.$.squares.forEach((square) => {
+  #initializeViews(moves: Move[]) {
+    this.$$.squares.forEach((square) => {
       const existingMove = moves.find((move) => move.squareId === +square.id);
       if (existingMove) {
         this.#handlePlayerMove(square, existingMove.player);
@@ -115,24 +119,24 @@ export default class View {
   //   icon.classList.remove("fa-caret-up");
   // }
 
-  #toggleMenu(player) {
+  #toggleMenu() {
     this.$.menu_items.classList.toggle("hidden");
     this.$.menu_btn.classList.toggle("border");
 
-    const icon = this.$.menu_btn.querySelector("i");
+    const icon = this.#qs("i", this.$.menu_btn);
 
     icon.classList.toggle("fa-caret-down");
     icon.classList.toggle("fa-caret-up");
   }
 
-  #handlePlayerMove(squareEle, player) {
+  #handlePlayerMove(squareEle: Element, player: Player) {
     const icon = document.createElement("i");
     icon.classList.add("fa-solid", player.iconClass, player.colorClass);
 
     squareEle.replaceChildren(icon);
   }
 
-  #setTurnIndicators(player) {
+  #setTurnIndicators(player: Player) {
     const icon = document.createElement("i");
     const label = document.createElement("p");
 
@@ -144,7 +148,7 @@ export default class View {
   }
 
   // query selector
-  #qs(selector, parent) {
+  #qs(selector: string, parent?: Element) {
     const ele = parent
       ? parent.querySelector(selector)
       : document.querySelector(selector);
@@ -154,14 +158,23 @@ export default class View {
   }
 
   //query selector all
-  #qsa(selector) {
+  #qsa(selector: string) {
     const ele = document.querySelectorAll(selector);
     if (!ele) throw new Error("Element not found!");
     return ele;
   }
 
-  #delegate(el, selector, eventKey, handler) {
+  #delegate(
+    el: Element,
+    selector: string,
+    eventKey: string,
+    handler: (el: Element) => void
+  ) {
     el.addEventListener(eventKey, (event) => {
+      if (!(event.target instanceof Element)) {
+        throw new Error("Event target not found");
+      }
+
       if (event.target.matches(selector)) {
         handler(event.target);
       }
